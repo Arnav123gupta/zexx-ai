@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Using browser speech synthesis",
         fallback: true,
-        text: text,
+        text: "Hello! I am HEAVEN NETWORK, your AI assistant.",
       },
       { status: 200 },
     )
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Speech service unavailable",
         fallback: true,
-        text: "Hello! I am Zexx, your AI assistant.",
+        text: "Hello! I am HEAVEN NETWORK, your AI assistant.",
       },
       { status: 200 },
     )

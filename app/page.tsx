@@ -1,24 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import {
-  Mic,
-  MicOff,
-  Send,
-  Volume2,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  Shield,
-  Zap,
-  Sparkles,
-  Brain,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { SetupGuide } from "@/components/setup-guide"
+import { Brain } from "lucide-react"
 
 // Define interfaces
 interface ChatMessage {
@@ -63,7 +46,7 @@ declare global {
   }
 }
 
-export default function ZexxApp() {
+export default function HeavenNetworkApp() {
   // Core React States
   const [isListening, setIsListening] = useState(false)
   const [wakeDetected, setWakeDetected] = useState(false)
@@ -74,9 +57,11 @@ export default function ZexxApp() {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voiceStatus, setVoiceStatus] = useState<"elevenlabs" | "browser" | "error">("browser")
   const [aiStatus, setAiStatus] = useState<"online" | "offline" | "error">("online")
-  const [aiProvider, setAiProvider] = useState<string>("zexx-ai")
+  const [aiProvider, setAiProvider] = useState<string>("heaven-network-ai")
   const [micPermission, setMicPermission] = useState<"granted" | "denied" | "prompt" | "unknown">("unknown")
   const [speechSupported, setSpeechSupported] = useState(true)
+  const [showHelp, setShowHelp] = useState(false)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   // Refs
   const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -88,15 +73,10 @@ export default function ZexxApp() {
       id: "welcome",
       type: "system",
       content:
-        "🌟 Welcome to ZEXX! I'm your AI assistant ready to answer questions, have conversations, and help with various topics. I can discuss science, technology, programming, history, and much more. Click the microphone to start voice interaction or just type your message!",
+        "🌟 Welcome to HEAVEN NETWORK! I'm your AI assistant ready to answer questions, have conversations, and help with various topics. I can discuss science, technology, programming, history, and much more. Click the microphone to start voice interaction or just type your message!",
       timestamp: new Date(),
     }
     setChatHistory([welcomeMessage])
-
-    // Auto-test on startup
-    setTimeout(() => {
-      handleSubmit("Hello! I'm testing ZEXX's capabilities.")
-    }, 1500)
   }, [])
 
   // Check microphone permission
@@ -154,7 +134,7 @@ export default function ZexxApp() {
             .map((result) => result[0].transcript)
             .join("")
 
-          if (transcript.toLowerCase().includes("zexx")) {
+          if (transcript.toLowerCase().includes("heaven network")) {
             setWakeDetected(true)
             setInputText("")
           } else if (wakeDetected) {
@@ -275,7 +255,7 @@ export default function ZexxApp() {
           const startMessage: ChatMessage = {
             id: Date.now().toString(),
             type: "system",
-            content: "🎤 Voice recognition started! Say 'Zexx' to wake me up, then speak your message.",
+            content: "🎤 Voice recognition started! Say 'HEAVEN NETWORK' to wake me up, then speak your message.",
             timestamp: new Date(),
           }
           setChatHistory((prev) => [...prev, startMessage])
@@ -329,24 +309,35 @@ export default function ZexxApp() {
   // Handle AI Chat
   const handleChat = async (message: string) => {
     try {
-      console.log("🚀 Sending chat request...")
-      setAiProvider("zexx-ai")
+      if (!message?.trim()) {
+        console.log("[v0] Empty message, skipping")
+        return
+      }
+
+      console.log("[v0] Sending chat request...")
+      setAiProvider("heaven-network-ai")
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, chatHistory }),
+        body: JSON.stringify({ message: message.trim(), chatHistory }),
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      console.log("📨 Chat response received:", data)
+      console.log("[v0] Chat response received:", data)
 
       setAiStatus("online")
-      setAiProvider(data.provider || "zexx-ai")
+      setAiProvider(data.provider || "heaven-network-ai")
 
       const aiMessage: ChatMessage = {
         id: Date.now().toString(),
@@ -361,9 +352,13 @@ export default function ZexxApp() {
       // Speak the response
       await speakText(data.response)
     } catch (error) {
-      console.error("❌ Chat error:", error)
-      setAiStatus("online") // Keep showing online since built-in AI works
-      setAiProvider("zexx-ai")
+      if (error instanceof Error && error.name === "AbortError") {
+        console.error("[v0] Chat request timeout")
+      } else {
+        console.error("[v0] Chat error:", error)
+      }
+      setAiStatus("online")
+      setAiProvider("heaven-network-ai")
 
       const errorMessage: ChatMessage = {
         id: Date.now().toString(),
@@ -425,275 +420,210 @@ export default function ZexxApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-black p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-bold text-rose-400 mb-2 drop-shadow-2xl">ZEXX</h1>
-          <p className="text-rose-300 text-lg">Your AI Knowledge Assistant</p>
-          <p className="text-rose-400/60 text-xs mt-1 font-light tracking-wide">made by 4st_destroyer_owner ARNAV</p>
-          <div className="mt-2 px-4 py-2 bg-green-900/30 text-green-300 rounded-full inline-block border border-green-500/40 flex items-center gap-2">
-            {aiStatus === "online" ? (
-              <>
-                <Brain className="w-4 h-4" />
-                ONLINE - {aiProvider === "zexx-enhanced-ai" ? "Enhanced AI Brain" : aiProvider.toUpperCase()}
-              </>
-            ) : (
-              <>
-                <AlertCircle className="w-4 h-4" />
-                OFFLINE - Using Fallback AI
-              </>
-            )}
+    <div className="min-h-screen bg-black text-green-400 font-mono scanlines overflow-hidden relative">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-cyan-500 to-purple-500 animate-pulse"></div>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto p-4">
+        {/* Terminal Header */}
+        <div className="mb-8 border-b border-green-500/30 pb-4">
+          <div className="terminal-text mb-2">
+            <span className="text-cyan-400">{">"}</span>
+            <span className="text-green-400 ml-2 animate-pulse">SYSTEM INITIALIZED</span>
           </div>
-          {wakeDetected && (
-            <div className="mt-2 px-4 py-2 bg-rose-900/30 text-rose-300 rounded-full inline-block border border-rose-500/40">
-              Wake word detected! Listening...
+          <h1 className="text-5xl font-bold text-green-400 glow-green mb-2">H34V3N N3TW0RK v3.0</h1>
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-cyan-400 font-mono">
+              <div>{">>>"} Advanced AI Terminal | Max Power Mode Enabled</div>
+              <div className="mt-1">{">>>"} Multi-Provider | Groq-70B | Grok-2 | GPT-4o</div>
+              <div className="mt-1">{">>>"} Token Limit: 1000 | Temperature: 0.8 | Response: Comprehensive</div>
             </div>
-          )}
-          {isSpeaking && (
-            <div className="mt-2 px-4 py-2 bg-slate-800/40 text-rose-300 rounded-full inline-block border border-slate-600/40">
-              Speaking...
+            <div className="text-right text-xs text-purple-400">
+              <div>ADMIN: 4st_destroyer_owner ARNAV</div>
+              <div className="glow-purple">STATUS: MAXIMUM CAPACITY</div>
             </div>
-          )}
-          {micPermission === "denied" && (
-            <div className="mt-2 px-4 py-2 bg-red-900/30 text-red-300 rounded-full inline-block border border-red-500/40 flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              Microphone access denied - Text input available
-            </div>
-          )}
+          </div>
         </div>
 
-        {/* Main Interface */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Chat Interface */}
-          <div className="lg:col-span-2">
-            <Card className="h-96 mb-4 bg-slate-900/70 border-slate-700/50 backdrop-blur-sm shadow-2xl">
-              <CardContent className="p-4 h-full">
-                <ScrollArea className="h-full">
-                  <div className="space-y-4">
-                    {chatHistory.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            message.type === "user"
-                              ? "bg-rose-600 text-white shadow-lg shadow-rose-600/30"
-                              : message.type === "system"
-                                ? "bg-blue-900/50 text-blue-200 border border-blue-500/30"
-                                : "bg-slate-800/80 text-rose-100 border border-slate-600/30"
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
-                          <p className="text-xs opacity-70 mt-1">{message.timestamp.toLocaleTimeString()}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="bg-slate-800/80 text-rose-200 px-4 py-2 rounded-lg border border-slate-600/30">
-                          <div className="flex items-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-rose-400"></div>
-                            <span>ZEXX is thinking...</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+        {/* Main Terminal Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+          {/* Chat Terminal */}
+          <div className="lg:col-span-3">
+            <div className="border border-green-500/40 bg-black/80 backdrop-blur-sm">
+              <div className="border-b border-green-500/30 px-4 py-2 flex items-center justify-between">
+                <span className="text-xs text-cyan-400 font-bold">[CHAT_CONSOLE]</span>
+                <span className="text-xs text-green-500/60 glow-green">ACTIVE</span>
+              </div>
+              <div className="p-4 h-96 overflow-y-auto space-y-3 font-mono text-sm">
+                {chatHistory.length === 0 ? (
+                  <div className="text-green-700/50 terminal-text">
+                    <div>$ HEAVEN_NETWORK initialized...</div>
+                    <div className="mt-2">$ Type your query or use [ALT+M] for voice</div>
+                    <div className="mt-1">$ Press [?] for help</div>
                   </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+                ) : (
+                  chatHistory.map((message) => (
+                    <div key={message.id} className="space-y-1">
+                      <div className={`flex gap-2 ${message.type === "user" ? "text-cyan-400" : "text-green-400"}`}>
+                        <span className="text-purple-400">{">"}</span>
+                        <span className={message.type === "user" ? "glow-cyan" : "glow-green"}>
+                          {message.type === "user" ? "[USER]" : "[HEAVEN]"}
+                        </span>
+                        <span className="text-green-400/60">{message.timestamp.toLocaleTimeString()}</span>
+                      </div>
+                      <div
+                        className={`pl-4 ${message.type === "user" ? "text-cyan-300" : "text-green-300"} break-words`}
+                      >
+                        {message.content}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {isLoading && (
+                  <div className="text-cyan-400 terminal-text animate-pulse">
+                    <div>$ PROCESSING...</div>
+                    <div className="text-green-500/50 text-xs">$ {">>>>"} Accessing GROQ cluster...</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
-            {/* Input Area */}
-            <div className="flex space-x-2">
-              <Input
+          {/* System Status Panel */}
+          <div className="space-y-4">
+            <div className="border border-purple-500/40 bg-black/80 backdrop-blur-sm">
+              <div className="border-b border-purple-500/30 px-4 py-2">
+                <span className="text-xs text-purple-400 font-bold">[SYS_STATUS]</span>
+              </div>
+              <div className="p-4 space-y-2 text-xs font-mono">
+                <div className="flex justify-between">
+                  <span className="text-purple-400">API:</span>
+                  <span className="glow-green">{aiProvider.toUpperCase()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-purple-400">CONN:</span>
+                  <span className={aiStatus === "online" ? "glow-green" : "text-red-400"}>
+                    {aiStatus.toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-purple-400">MIC:</span>
+                  <span className={micPermission === "granted" ? "glow-green" : "text-yellow-400"}>
+                    {micPermission?.toUpperCase() || "N/A"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-purple-400">VOICE:</span>
+                  <span className={isSpeaking ? "glow-cyan" : "text-green-700/50"}>
+                    {isSpeaking ? "ACTIVE" : "IDLE"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border border-cyan-500/40 bg-black/80 backdrop-blur-sm">
+              <div className="border-b border-cyan-500/30 px-4 py-2">
+                <span className="text-xs text-cyan-400 font-bold">[COMMANDS]</span>
+              </div>
+              <div className="p-3 space-y-1 text-xs font-mono">
+                <div className="text-cyan-400">
+                  <span className="text-purple-400">[ALT+M]</span> Voice Input
+                </div>
+                <div className="text-cyan-400">
+                  <span className="text-purple-400">[?]</span> Help Menu
+                </div>
+                <div className="text-cyan-400">
+                  <span className="text-purple-400">[ENTER]</span> Send Query
+                </div>
+                <div className="text-cyan-400">
+                  <span className="text-purple-400">[ESC]</span> Clear Input
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Terminal Input */}
+        <div className="border border-green-500/40 bg-black/80 backdrop-blur-sm">
+          <div className="border-b border-green-500/30 px-4 py-2">
+            <span className="text-xs text-green-400 font-bold">[INPUT_STREAM]</span>
+          </div>
+          <div className="p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-green-400">$</span>
+              <input
+                ref={inputRef}
+                type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Ask me anything or use voice..."
-                onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
-                className="flex-1 bg-slate-900/70 border-slate-700/50 text-rose-100 placeholder:text-rose-300/50 focus:border-rose-400 shadow-lg"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") handleSubmit()
+                  if (e.key === "?") setShowHelp(!showHelp)
+                  if (e.key === "Escape") setInputText("")
+                }}
+                placeholder="Enter your query..."
+                className="terminal-input flex-1"
               />
-              <Button
+              <button
                 onClick={toggleListening}
-                variant={isListening ? "destructive" : "default"}
-                size="icon"
-                className={
-                  isListening
-                    ? "bg-rose-700 hover:bg-rose-800 shadow-lg shadow-rose-700/30"
-                    : micPermission === "denied"
-                      ? "bg-red-800 hover:bg-red-700 text-red-300 shadow-lg"
-                      : "bg-slate-800 hover:bg-slate-700 text-rose-300 shadow-lg"
-                }
-                disabled={!speechSupported}
+                className={`terminal-button ${isListening ? "border-red-500/60 text-red-400 glow-cyan" : ""}`}
               >
-                {isListening ? <MicOff /> : <Mic />}
-              </Button>
-              <Button
-                onClick={() => handleSubmit()}
-                size="icon"
-                className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/30"
-              >
-                <Send />
-              </Button>
+                {isListening ? "[REC]" : "[MIC]"}
+              </button>
+              <button onClick={handleSubmit} className="terminal-button" disabled={!inputText.trim() || isLoading}>
+                [SEND]
+              </button>
+            </div>
+            <div className="text-xs text-green-700/40 font-mono">
+              {isListening && <span className="glow-green">Listening for input...</span>}
+              {wakeDetected && <span className="glow-purple">Wake word detected!</span>}
+              {isSpeaking && <span className="glow-cyan">Voice output active</span>}
             </div>
           </div>
-
-          {/* Status & Controls */}
-          <div className="space-y-4">
-            {/* System Status */}
-            <Card className="bg-slate-900/70 border-slate-700/50 backdrop-blur-sm shadow-2xl">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-2 text-rose-300">System Status</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-rose-200">Microphone</span>
-                    <div className="flex items-center gap-1">
-                      {micPermission === "granted" ? (
-                        <CheckCircle className="w-3 h-3 text-green-400" />
-                      ) : micPermission === "denied" ? (
-                        <XCircle className="w-3 h-3 text-red-400" />
-                      ) : (
-                        <AlertCircle className="w-3 h-3 text-orange-400" />
-                      )}
-                      <span
-                        className={`text-xs px-2 py-1 rounded ${
-                          micPermission === "granted"
-                            ? "bg-green-900/30 text-green-300"
-                            : micPermission === "denied"
-                              ? "bg-red-900/30 text-red-300"
-                              : "bg-orange-900/30 text-orange-300"
-                        }`}
-                      >
-                        {micPermission === "granted" ? "Ready" : micPermission === "denied" ? "Denied" : "Unknown"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-rose-200">AI Brain</span>
-                    <div className="flex items-center gap-1">
-                      <CheckCircle className="w-3 h-3 text-green-400" />
-                      <span className="text-xs px-2 py-1 rounded bg-green-900/30 text-green-300 flex items-center gap-1">
-                        <Brain className="w-3 h-3" />
-                        {aiProvider}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-rose-200">Voice Output</span>
-                    <div className="flex items-center gap-1">
-                      <CheckCircle className="w-3 h-3 text-green-400" />
-                      <span className="text-xs px-2 py-1 rounded bg-green-900/30 text-green-300">Browser</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-rose-200">Listening</span>
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        isListening ? "bg-rose-500 shadow-lg shadow-rose-500/60 animate-pulse" : "bg-slate-700"
-                      }`}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-rose-200">Speaking</span>
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        isSpeaking ? "bg-rose-400 shadow-lg shadow-rose-400/60 animate-pulse" : "bg-slate-700"
-                      }`}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="bg-slate-900/70 border-slate-700/50 backdrop-blur-sm shadow-2xl">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-2 text-rose-300">Quick Questions</h3>
-                <div className="space-y-2">
-                  <Button
-                    onClick={() => handleSubmit("What can you help me with?")}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start bg-slate-800/60 border-slate-600/50 text-rose-200 hover:bg-slate-700/60 hover:text-rose-100 hover:border-rose-500/30 transition-all"
-                  >
-                    <Brain className="w-4 h-4 mr-2 text-green-400" />
-                    Ask About My Capabilities
-                  </Button>
-                  <Button
-                    onClick={() => handleSubmit("Explain artificial intelligence")}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start bg-slate-800/60 border-slate-600/50 text-rose-200 hover:bg-slate-700/60 hover:text-rose-100 hover:border-rose-500/30 transition-all"
-                  >
-                    <Zap className="w-4 h-4 mr-2 text-blue-400" />
-                    Learn About AI
-                  </Button>
-                  <Button
-                    onClick={() => handleSubmit("Tell me about programming")}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start bg-slate-800/60 border-slate-600/50 text-rose-200 hover:bg-slate-700/60 hover:text-rose-100 hover:border-rose-500/30 transition-all"
-                  >
-                    <Sparkles className="w-4 h-4 mr-2 text-purple-400" />
-                    Discuss Programming
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      speakText(
-                        "Hello! I am Zexx, your AI knowledge assistant. I can answer questions on science, technology, programming, history, and many other topics!",
-                      )
-                    }
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start bg-slate-800/60 border-slate-600/50 text-rose-200 hover:bg-slate-700/60 hover:text-rose-100 hover:border-rose-500/30 transition-all"
-                    disabled={isSpeaking}
-                  >
-                    <Volume2 className="w-4 h-4 mr-2 text-rose-400" />
-                    Test Voice
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Knowledge Areas */}
-            <Card className="bg-slate-900/70 border-slate-700/50 backdrop-blur-sm shadow-2xl">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-2 text-rose-300">🧠 Knowledge Areas</h3>
-                <div className="space-y-1 text-xs text-rose-200/80">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>Science & Technology</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>Programming & Development</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>Mathematics & Logic</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>History & Culture</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>General Knowledge</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-400" />
-                    <span>Learning & Education</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Setup Guide - Show when helpful */}
-            {aiProvider === "zexx-enhanced-ai" && <SetupGuide />}
-          </div>
         </div>
+
+        {/* Help Menu */}
+        {showHelp && (
+          <div className="mt-4 border border-yellow-500/40 bg-black/80 backdrop-blur-sm p-4">
+            <div className="text-yellow-400 font-bold mb-3">[ADVANCED_CAPABILITIES]</div>
+            <div className="grid grid-cols-2 gap-4 text-xs font-mono text-yellow-400/80">
+              <div>
+                <div className="text-yellow-500">&gt; Technical Expertise:</div>
+                <div className="mt-1 space-y-1 text-yellow-400/60">
+                  <div>- Cybersecurity & Pentesting</div>
+                  <div>- Programming (10+ languages)</div>
+                  <div>- Network Administration</div>
+                  <div>- Systems Architecture</div>
+                  <div>- Cloud Infrastructure</div>
+                  <div>- Database Design</div>
+                </div>
+              </div>
+              <div>
+                <div className="text-yellow-500">&gt; AI Models Active:</div>
+                <div className="mt-1 space-y-1 text-yellow-400/60">
+                  <div>1. Groq Llama 70B (Primary)</div>
+                  <div>2. Grok-2 (Secondary)</div>
+                  <div>3. GPT-4o (Tertiary)</div>
+                  <div>4. Offline Mode (Fallback)</div>
+                  <div>Max Tokens: 1000</div>
+                  <div>Power Level: MAXIMUM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
+
+const sampleQuestions = [
+  {
+    icon: Brain,
+    question: "What is artificial intelligence?",
+    description: "Learn about AI and machine learning",
+    example:
+      "Hello! I am HEAVEN NETWORK, your AI knowledge assistant. I can answer questions on science, technology, programming, history, and many other topics!",
+  },
+]

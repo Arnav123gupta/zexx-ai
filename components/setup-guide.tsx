@@ -56,7 +56,9 @@ export function SetupGuide() {
         <div className="p-3 bg-green-900/20 border border-green-500/30 rounded-lg mb-4">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle className="w-4 h-4 text-green-400" />
-            <span className="text-sm font-medium text-green-200">ZEXX is fully functional without any setup!</span>
+            <span className="text-sm font-medium text-green-200">
+              HEAVEN NETWORK is fully functional without any setup!
+            </span>
           </div>
           <p className="text-xs text-green-200/80">
             All core features work out of the box. Add API keys below only if you want enhanced capabilities.
@@ -105,8 +107,8 @@ export function SetupGuide() {
 
         <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
           <p className="text-xs text-blue-200">
-            💡 <strong>Quick Start:</strong> ZEXX works perfectly as-is! For the best experience, add a free Groq API
-            key for enhanced AI responses. All other features work without any configuration.
+            💡 <strong>Quick Start:</strong> HEAVEN NETWORK works perfectly as-is! For the best experience, add a free
+            Groq API key for enhanced AI responses. All other features work without any configuration.
           </p>
         </div>
       </CardContent>
