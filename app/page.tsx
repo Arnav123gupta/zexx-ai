@@ -58,7 +58,9 @@ export default function HeavenNetworkApp() {
   const [voiceStatus, setVoiceStatus] = useState<"elevenlabs" | "browser" | "error">("browser")
   const [aiStatus, setAiStatus] = useState<"online" | "offline" | "error">("online")
   const [aiProvider, setAiProvider] = useState<string>("heaven-network-ai")
-  const [micPermission, setMicPermission] = useState<"granted" | "denied" | "prompt" | "unknown">("unknown")
+  const [micPermission, setMicPermission] = useState<
+    "prompt" | "granted" | "denied" | "unknown" | "unavailable" | "unsupported" | "error"
+  >("unknown")
   const [speechSupported, setSpeechSupported] = useState(true)
   const [showHelp, setShowHelp] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -99,13 +101,32 @@ export default function HeavenNetworkApp() {
   // Request microphone permission
   const requestMicrophonePermission = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      })
       stream.getTracks().forEach((track) => track.stop())
       setMicPermission("granted")
       return true
-    } catch (error) {
-      console.error("Microphone permission denied:", error)
-      setMicPermission("denied")
+    } catch (error: any) {
+      const errorMessage = error?.message || String(error)
+
+      if (errorMessage.includes("not found") || errorMessage.includes("NotFoundError")) {
+        console.error("[v0] Microphone device not found - likely preview environment")
+        setMicPermission("unavailable")
+      } else if (errorMessage.includes("denied") || errorMessage.includes("NotAllowedError")) {
+        console.error("[v0] Microphone permission denied by user")
+        setMicPermission("denied")
+      } else if (errorMessage.includes("not supported") || errorMessage.includes("NotSupportedError")) {
+        console.error("[v0] getUserMedia not supported")
+        setMicPermission("unsupported")
+      } else {
+        console.error("[v0] Microphone error:", errorMessage)
+        setMicPermission("error")
+      }
       return false
     }
   }
@@ -237,6 +258,29 @@ export default function HeavenNetworkApp() {
           timestamp: new Date(),
         }
         setChatHistory((prev) => [...prev, deniedMessage])
+        return
+      }
+
+      if (micPermission === "unavailable" || micPermission === "unsupported") {
+        const unavailableMessage: ChatMessage = {
+          id: Date.now().toString(),
+          type: "system",
+          content:
+            "🎤 Microphone is not available in this environment (preview mode). Use text input instead, or deploy to a live environment to enable voice features.",
+          timestamp: new Date(),
+        }
+        setChatHistory((prev) => [...prev, unavailableMessage])
+        return
+      }
+
+      if (micPermission === "error") {
+        const errorMsg: ChatMessage = {
+          id: Date.now().toString(),
+          type: "system",
+          content: "🎤 Unable to initialize microphone. Please refresh the page and try again, or use text input.",
+          timestamp: new Date(),
+        }
+        setChatHistory((prev) => [...prev, errorMsg])
         return
       }
 
