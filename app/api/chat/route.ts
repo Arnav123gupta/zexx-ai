@@ -62,6 +62,70 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
     const hasGroqKey = process.env.GROQ_API_KEY
     const hasXaiKey = process.env.XAI_API_KEY
     const hasOpenaiKey = process.env.OPENAI_API_KEY
+    const hasGoogleSearchKey = process.env.GOOGLE_SEARCH_API_KEY
+
+    const isKaliQuery =
+      /kali|metasploit|nmap|burp|wireshark|aircrack|hydra|sqlmap|hashcat|john|exploit|penetration|hacking|linux security|reverse engineering/i.test(
+        sanitizedMessage,
+      )
+
+    if (isKaliQuery && hasGoogleSearchKey) {
+      try {
+        console.log("[v0] Fetching online Kali Linux knowledge from Google Search")
+        const searchQuery = sanitizedMessage.length > 50 ? sanitizedMessage.substring(0, 50) : sanitizedMessage
+        const searchResponse = await fetch(
+          `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(searchQuery + " kali linux site:kali.org OR site:github.com")}&key=${hasGoogleSearchKey}&cx=YOUR_CUSTOM_SEARCH_ENGINE_ID`,
+          { timeout: 5000 },
+        )
+
+        if (searchResponse.ok) {
+          const searchData = await searchResponse.json()
+          const searchResults =
+            searchData.items
+              ?.slice(0, 3)
+              .map((item: any) => `${item.title}: ${item.snippet}`)
+              .join("\n") || ""
+
+          if (searchResults) {
+            const enhancedMessages = [
+              ...messages,
+              {
+                role: "system",
+                content: `Recent online Kali Linux documentation and resources:\n${searchResults}`,
+              },
+            ]
+
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${hasGroqKey}`,
+              },
+              body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                messages: enhancedMessages,
+                max_tokens: 1200,
+                temperature: 0.8,
+              }),
+            })
+
+            if (response.ok) {
+              const data = await response.json()
+              const text = data.choices?.[0]?.message?.content || "Response processed."
+              console.log("[v0] GROQ API SUCCESS WITH ONLINE KALI KNOWLEDGE")
+              return NextResponse.json({
+                response: text,
+                provider: "groq-with-online-kali",
+                status: "online",
+                timestamp: new Date().toISOString(),
+              })
+            }
+          }
+        }
+      } catch (error) {
+        console.log("[v0] Online Kali search error:", error instanceof Error ? error.message : "Unknown error")
+      }
+    }
 
     if (hasGroqKey) {
       try {
@@ -69,10 +133,10 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+            Authorization: `Bearer ${hasGroqKey}`,
           },
           body: JSON.stringify({
-            model: "mixtral-8x7b-32768",
+            model: "llama-3.3-70b-versatile",
             messages,
             max_tokens: 1200,
             temperature: 0.8,
@@ -89,7 +153,7 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
           console.log("[v0] GROQ API SUCCESS - ONLINE MODE ACTIVE")
           return NextResponse.json({
             response: text,
-            provider: "groq-mixtral-8x7b-32768",
+            provider: "groq-llama-3.3-70b-versatile",
             status: "online",
             timestamp: new Date().toISOString(),
           })
@@ -105,7 +169,7 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+            Authorization: `Bearer ${hasXaiKey}`,
           },
           body: JSON.stringify({
             model: "grok-2",
@@ -141,7 +205,7 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            Authorization: `Bearer ${hasOpenaiKey}`,
           },
           body: JSON.stringify({
             model: "gpt-4o",
