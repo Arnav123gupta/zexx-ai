@@ -62,6 +62,8 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
     const hasGroqKey = process.env.GROQ_API_KEY
     const hasXaiKey = process.env.XAI_API_KEY
     const hasOpenaiKey = process.env.OPENAI_API_KEY
+    const hasXbowKey = process.env.XBOW_API_KEY
+    const xbowEndpoint = process.env.XBOW_ENDPOINT || "http://localhost:8000/v1/chat/completions"
 
     const isKaliQuery =
       /kali|metasploit|nmap|burp|wireshark|aircrack|hydra|sqlmap|hashcat|john|exploit|penetration|hacking|linux security|reverse engineering|subfinder|nuclei|amass|recon|osint/i.test(
@@ -137,6 +139,41 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
         }
       } catch (error) {
         console.log("[v0] xAI connection error:", error instanceof Error ? error.message : "Unknown error")
+      }
+    }
+
+    if (hasXbowKey) {
+      try {
+        const response = await fetch(xbowEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${hasXbowKey}`,
+          },
+          body: JSON.stringify({
+            messages,
+            temperature: 0.8,
+            max_tokens: 1200,
+          }),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          console.log("[v0] Xbow/Xaibo API error:", response.status, errorData)
+        } else {
+          const data = await response.json()
+          const text = data.choices?.[0]?.message?.content || "Response processed."
+
+          console.log("[v0] XBOW/XAIBO MODULAR AI SUCCESS - ONLINE MODE ACTIVE")
+          return NextResponse.json({
+            response: text,
+            provider: "xbow-xaibo-modular-agent",
+            status: "online",
+            timestamp: new Date().toISOString(),
+          })
+        }
+      } catch (error) {
+        console.log("[v0] Xbow/Xaibo connection error:", error instanceof Error ? error.message : "Unknown error")
       }
     }
 

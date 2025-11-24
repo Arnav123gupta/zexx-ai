@@ -11,7 +11,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "HEAVEN NETWORK - Hacker Terminal",
   description: "Advanced AI Terminal Interface for Ethical Hackers",
-  generator: "v0.dev",
+  generator: "HEAVEN NETWORK",
 }
 
 export default function RootLayout({

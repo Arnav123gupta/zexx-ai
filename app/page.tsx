@@ -213,95 +213,69 @@ export default function Home() {
   useEffect(() => {
     checkMicrophonePermission()
 
+    // Detect preview environment early
     if (typeof window !== "undefined") {
-      if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
-        setSpeechSupported(false)
-        console.log("Speech recognition not supported")
-        return
-      }
+      const isPreviewEnv =
+        window.location.hostname.includes("preview") ||
+        window.location.hostname.includes("localhost") ||
+        window.location.hostname.includes("127.0.0.1") ||
+        !navigator.mediaDevices?.getUserMedia
 
-      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
+      if (isPreviewEnv) {
+        setMicPermission("unavailable")
+      }
+    }
+
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
       recognitionRef.current = new SpeechRecognition()
 
-      if (recognitionRef.current) {
-        recognitionRef.current.continuous = true
-        recognitionRef.current.interimResults = true
-        recognitionRef.current.lang = "en-US"
+      recognitionRef.current.onstart = () => {
+        setIsListening(true)
+      }
 
-        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-          const transcript = Array.from({ length: event.results.length }, (_, i) => event.results[i])
-            .map((result) => result[0].transcript)
-            .join("")
+      recognitionRef.current.onend = () => {
+        setIsListening(false)
+      }
 
-          if (transcript.toLowerCase().includes("heaven network")) {
-            setWakeDetected(true)
-            setInputText("")
-          } else if (wakeDetected) {
-            setInputText(transcript)
-          }
-        }
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error)
+        setIsListening(false)
+      }
 
-        recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
-          console.error("Speech recognition error:", event.error)
-
-          switch (event.error) {
-            case "not-allowed":
-              setMicPermission("denied")
-              setIsListening(false)
-              const permissionMessage: ChatMessage = {
-                id: Date.now().toString(),
-                type: "system",
-                content:
-                  "🎤 Microphone access was denied. Please enable microphone permissions in your browser settings to use voice features. You can still type your messages!",
-                timestamp: new Date(),
-              }
-              saveMessageToConversation(permissionMessage)
-              break
-            case "no-speech":
-              console.log("No speech detected")
-              break
-            default:
-              setIsListening(false)
-              console.log("Speech recognition error:", event.error)
-          }
-        }
-
-        recognitionRef.current.onstart = () => {
-          console.log("Speech recognition started")
-        }
-
-        recognitionRef.current.onend = () => {
-          console.log("Speech recognition ended")
-          if (isListening && micPermission === "granted") {
-            setTimeout(() => {
-              if (recognitionRef.current && isListening) {
-                try {
-                  recognitionRef.current.start()
-                } catch (error) {
-                  console.log("Error restarting speech recognition:", error)
-                  setIsListening(false)
-                }
-              }
-            }, 100)
+      recognitionRef.current.onresult = (event: any) => {
+        let interimTranscript = ""
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript
+          if (event.results[i].isFinal) {
+            setInputText((prev) => prev + transcript)
+          } else {
+            interimTranscript += transcript
           }
         }
       }
+    } else {
+      setSpeechSupported(false)
     }
+  }, [])
 
-    if (typeof window !== "undefined") {
-      synthRef.current = window.speechSynthesis
-    }
+  if (typeof window !== "undefined") {
+    synthRef.current = window.speechSynthesis
+  }
 
-    return () => {
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop()
-        } catch (error) {
-          console.log("Error stopping speech recognition:", error)
-        }
+  const cleanup = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop()
+      } catch (error) {
+        console.log("Error stopping speech recognition:", error)
       }
     }
-  }, [isListening, wakeDetected, micPermission])
+  }
+
+  useEffect(() => {
+    return cleanup
+  }, [])
 
   // Start/Stop Listening
   const toggleListening = async () => {
@@ -549,7 +523,19 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono overflow-hidden">
+    <div className="flex flex-col h-screen bg-black text-green-400 font-mono">
+      {/* Header */}
+      <header className="border-b border-green-600 border-opacity-30 p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Brain className="w-6 h-6 text-green-500 animate-pulse" />
+            <h1 className="text-2xl font-bold text-green-400 tracking-wider">⚡ HEAVEN NETWORK ⚡</h1>
+            <span className="text-xs text-green-600">made by 4st_destroyer_owner ARNAV</span>
+          </div>
+          <div className="text-xs text-green-600 font-mono">[SYSTEM ONLINE]</div>
+        </div>
+      </header>
+
       {/* Terminal Header */}
       <div className="relative z-10 max-w-6xl mx-auto p-4">
         <div className="mb-8 border-b border-green-500/30 pb-4">
