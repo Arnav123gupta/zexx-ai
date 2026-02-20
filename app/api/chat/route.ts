@@ -10,12 +10,26 @@ export async function POST(request: NextRequest) {
 
     const sanitizedMessage = message.trim().substring(0, 1000)
 
+    // Detect language preference (Hinglish, English, or mixed)
+    const isHinglish = /[ा-ॿ]|help kro|fix kar|sari|kya|kaise|kar do|hta|bta|chnge|upgrde|fix kro|likha|niche|likhe|sab kuch|add kro|puch|aur|par|jo|hai|nahi|hna|krta|krte|likh|tik|acha|bura|kb|jb|bs|ab|to|bhi/.test(sanitizedMessage.toLowerCase())
+
     console.log("[v0] Chat API called with message:", sanitizedMessage)
+    if (isHinglish) {
+      console.log("[v0] Language detected: Hinglish")
+    }
 
     const messages = [
       {
         role: "system",
         content: `You are HEAVEN NETWORK, an advanced AI assistant with extensive knowledge and capabilities.
+
+LANGUAGE SUPPORT:
+- Primary: English (fluent technical English)
+- Secondary: Hinglish (Hindi-English mix) - Respond in Hinglish when user writes in Hinglish
+- Understanding: Detect and adapt to user's language preference automatically
+- Examples: "help kro" = provide help, "fix kar do" = fix this, "sari features" = all features, "kya problem hai" = what's the issue
+- Code/Commands: Always provide in English format, but explain in the user's language preference
+- Bilingual: Seamlessly switch between Hindi and English in same response if needed
         
 CAPABILITIES:
 - Expert-level technical knowledge in cybersecurity, networking, programming, systems administration
@@ -51,7 +65,14 @@ TOOL MASTERY:
 - Wireshark: Protocol analysis, filtering, statistics, stream extraction, follow-up capabilities
 - nmap: NSE scripts, OS fingerprinting, service enumeration, timing templates, output formats
 
-TONE: Professional, direct, technical, knowledgeable. Provide command examples, command syntax, tool flags, and complete technical guidance. Focus on practical security knowledge and defensive understanding.`,
+TONE: Professional, direct, technical, knowledgeable. Provide command examples, command syntax, tool flags, and complete technical guidance. Focus on practical security knowledge and defensive understanding.
+
+HINGLISH RESPONSES:
+- If user writes in Hinglish, respond ONLY in Hinglish (Hindi-English mix)
+- Common Hinglish terms: "kar do" (do it), "likha aye" (write), "puch" (ask), "bta do" (tell), "acha" (ok/good), "sari" (all), "fix kro" (fix), "add kro" (add), "chnge kar" (change), "hta do" (remove), "upgrde kar" (upgrade)
+- Example: If user says "help kro", respond with "Bilkul! Isko help karte hain..." instead of English
+- Mix Hindi + English naturally: "Let me fix this issue ke liye ham..." 
+- Keep technical terms (commands, tools) in English, explanation in Hinglish`,
       },
       {
         role: "user",
@@ -213,6 +234,23 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
       }
     }
 
+    // Hinglish offline responses
+    const hinglishResponses: Record<string, string> = {
+      "help kro": "Bilkul! Main aapko help kar sakta hoon. Kya specific issue hai ya general guidance chahiye? Bataiye main kya kar sakta hoon.",
+      "fix kar do": "Fix karne ke liye pehle problem samajhte hain. Kya likha/error dikha? Bilkul fix kar dunga!",
+      "add kro": "Bilkul! Main feature add kar dunga. Kya exactly add karna hai bataiye.",
+      "chnge kar": "Theek hai, main change kar dunga. Kya change karna hai yeh bataiye.",
+      "hta do": "Bilkul! Main hata dunga. Bataiye kya hataana hai.",
+      "upgrde kar": "Upgrade kar dunga! Kya specific upgrade chahiye?",
+      "sari": "Haan, main sari cheezein handle kar dunga. Bataye kya chahiye!",
+      "kya problem hai": "Problem bataye, main fix kar dunga!",
+      "kaise kre": "Isko kaise karte hain - main samjhata hoon. Pehle specific topic bataye.",
+      "likha aye": "Likha jayega! Kya likhaana hai bataiye.",
+      "sab kuch": "Bilkul sab kuch! Isko properly handle karunga.",
+      "tik hai": "Theek hai! Main aage badhta hoon.",
+      "default hinglish": "Namaste! HEAVEN NETWORK yahan hoon aapki madad ke liye. Bataiye main kya kar sakta hoon? Kali Linux, security, hacking - kuch bhi puch sakte ho!",
+    }
+
     const offlineResponses: Record<string, string> = {
       "kali linux":
         "Kali Linux is the industry-leading penetration testing distribution with 600+ pre-installed security tools. Install: Download from kali.org, create bootable USB with dd/Etcher, boot, run installer. Setup: Choose desktop environment (XFCE recommended), configure networking, update package lists with 'apt update && apt upgrade', enable SSH, configure PostgreSQL.",
@@ -264,12 +302,39 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
     }
 
     const lowerMessage = sanitizedMessage.toLowerCase()
+
+    // Check for Hinglish responses first
+    if (isHinglish) {
+      for (const [key, response] of Object.entries(hinglishResponses)) {
+        if (key !== "default hinglish" && lowerMessage.includes(key)) {
+          return NextResponse.json({
+            response,
+            provider: "heaven-network-offline-hinglish",
+            status: "offline",
+            language: "hinglish",
+            timestamp: new Date().toISOString(),
+          })
+        }
+      }
+
+      // Default Hinglish response
+      return NextResponse.json({
+        response: hinglishResponses["default hinglish"],
+        provider: "heaven-network-offline-hinglish",
+        status: "offline",
+        language: "hinglish",
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    // Check for English responses
     for (const [key, response] of Object.entries(offlineResponses)) {
       if (key !== "default response" && lowerMessage.includes(key)) {
         return NextResponse.json({
           response,
           provider: "heaven-network-offline-kali",
           status: "offline",
+          language: "english",
           timestamp: new Date().toISOString(),
         })
       }
@@ -279,6 +344,7 @@ TONE: Professional, direct, technical, knowledgeable. Provide command examples, 
       response: offlineResponses["default response"],
       provider: "heaven-network-offline-kali",
       status: "offline",
+      language: "english",
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
