@@ -2,13 +2,19 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, chatHistory } = await request.json()
+    const { message, chatHistory, media } = await request.json()
 
     if (!message || typeof message !== "string" || message.trim().length === 0) {
       return NextResponse.json({ error: "Invalid message" }, { status: 400 })
     }
 
     const sanitizedMessage = message.trim().substring(0, 1000)
+    
+    // Build media context if images are provided
+    let mediaContext = ""
+    if (media && Array.isArray(media) && media.length > 0) {
+      mediaContext = `\n\n[USER_ATTACHED_IMAGES: ${media.length} image(s)]\nImage details: ${media.map((m: any) => `${m.name} (${m.type})`).join(", ")}\nAnalyze and describe these images in your response if relevant to the user's query.`
+    }
 
     // Detect language preference (Hinglish, English, or mixed)
     const isHinglish = /[ा-ॿ]|help kro|fix kar|sari|kya|kaise|kar do|hta|bta|chnge|upgrde|fix kro|likha|niche|likhe|sab kuch|add kro|puch|aur|par|jo|hai|nahi|hna|krta|krte|likh|tik|acha|bura|kb|jb|bs|ab|to|bhi/.test(sanitizedMessage.toLowerCase())
@@ -21,7 +27,7 @@ export async function POST(request: NextRequest) {
     const messages = [
       {
         role: "system",
-        content: `You are HEAVEN NETWORK, an advanced AI assistant with extensive knowledge and capabilities.
+        content: `You are HEAVEN NETWORK, an advanced AI assistant with extensive knowledge and capabilities.${mediaContext}
 
 LANGUAGE SUPPORT:
 - Primary: English (fluent technical English)

@@ -432,7 +432,10 @@ export default function Home() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: inputText }),
+        body: JSON.stringify({ 
+          message: inputText,
+          media: uploadedMedia.length > 0 ? uploadedMedia : null
+        }),
       })
 
       const data = await response.json()
@@ -795,17 +798,17 @@ export default function Home() {
                 className="hidden"
               />
               <button
+                onClick={toggleListening}
+                className={`terminal-button ${isListening ? "border-red-500/60 text-red-400 glow-cyan" : ""}`}
+              >
+                {isListening ? "[REC]" : "[MIC]"}
+              </button>
+              <button
                 onClick={() => fileInputRef.current?.click()}
                 className="terminal-button"
                 title="Upload image or screenshot"
               >
                 [IMG]
-              </button>
-              <button
-                onClick={toggleListening}
-                className={`terminal-button ${isListening ? "border-red-500/60 text-red-400 glow-cyan" : ""}`}
-              >
-                {isListening ? "[REC]" : "[MIC]"}
               </button>
               <button
                 onClick={(e) => handleSubmit(e)}
