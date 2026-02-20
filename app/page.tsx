@@ -432,7 +432,10 @@ export default function Home() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: inputText }),
+        body: JSON.stringify({ 
+          message: inputText,
+          media: uploadedMedia.length > 0 ? uploadedMedia : null
+        }),
       })
 
       const data = await response.json()
