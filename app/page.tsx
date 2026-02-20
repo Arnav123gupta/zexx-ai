@@ -77,7 +77,9 @@ export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showSidebar, setShowSidebar] = useState(true)
+  const [uploadedMedia, setUploadedMedia] = useState<Array<{id: string; url: string; type: 'image' | 'screenshot'; name: string}>>([])
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Refs
   const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -86,6 +88,42 @@ export default function Home() {
   // Get current conversation
   const currentConversation = conversations.find((c) => c.id === currentConversationId)
   const displayMessages = currentConversation?.messages || chatHistory
+
+  // Handle media upload
+  const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const mediaId = Date.now().toString()
+          const mediaType = file.type.startsWith('image/') ? 'image' : 'screenshot'
+          setUploadedMedia((prev) => [
+            ...prev,
+            {
+              id: mediaId,
+              url: event.target.result as string,
+              type: mediaType,
+              name: file.name,
+            },
+          ])
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  // Remove media
+  const removeMedia = (mediaId: string) => {
+    setUploadedMedia((prev) => prev.filter((m) => m.id !== mediaId))
+  }
 
   // Create new conversation
   const createNewConversation = () => {
@@ -372,12 +410,17 @@ export default function Home() {
   // Handle message submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputText.trim()) return
+    if (!inputText.trim() && uploadedMedia.length === 0) return
+
+    let messageContent = inputText
+    if (uploadedMedia.length > 0) {
+      messageContent += `\n[MEDIA ATTACHED: ${uploadedMedia.length} image(s)]`
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: "user",
-      content: inputText,
+      content: messageContent,
       timestamp: new Date(),
     }
 
@@ -451,6 +494,7 @@ export default function Home() {
 
       saveMessageToConversation(aiMessage)
       setAiResponse(data.response)
+      setUploadedMedia([]) // Clear uploaded media after sending
 
       // Speak the response
       await speakText(data.response)
@@ -702,6 +746,31 @@ export default function Home() {
             <span className="text-xs text-green-400 font-bold">[INPUT_STREAM]</span>
           </div>
           <div className="p-4 space-y-3">
+            {/* Media preview */}
+            {uploadedMedia.length > 0 && (
+              <div className="border border-cyan-500/30 bg-black/50 p-3 rounded">
+                <div className="text-xs text-cyan-400 mb-2 font-bold">[MEDIA_ATTACHED]</div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {uploadedMedia.map((media) => (
+                    <div key={media.id} className="relative group">
+                      <img
+                        src={media.url}
+                        alt={media.name}
+                        className="w-full h-20 object-cover rounded border border-cyan-500/40 hover:border-cyan-400 transition-colors"
+                      />
+                      <button
+                        onClick={() => removeMedia(media.id)}
+                        className="absolute top-1 right-1 bg-red-600/80 hover:bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ✕
+                      </button>
+                      <div className="text-xs text-cyan-400/60 truncate mt-1">{media.name}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center gap-2">
               <span className="text-green-400">$</span>
               <input
@@ -717,6 +786,21 @@ export default function Home() {
                 placeholder="Enter your query..."
                 className="terminal-input flex-1"
               />
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleMediaUpload}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="terminal-button"
+                title="Upload image or screenshot"
+              >
+                [IMG]
+              </button>
               <button
                 onClick={toggleListening}
                 className={`terminal-button ${isListening ? "border-red-500/60 text-red-400 glow-cyan" : ""}`}
