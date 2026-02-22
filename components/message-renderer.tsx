@@ -26,6 +26,7 @@ export function MessageRenderer({ content, type }: MessageRendererProps) {
     const parts: React.ReactNode[] = []
     const codeBlockRegex = /```(?:bash|sh|shell|cmd|command)?\n([\s\S]*?)```/g
     const commandRegex = /\$\s+([^\n]+)/g
+    const mediaRegex = /\[MEDIA_ATTACHED\]\s+(.+?)(?=\n|$)/g
     let lastIndex = 0
     let match
 
@@ -113,13 +114,36 @@ export function MessageRenderer({ content, type }: MessageRendererProps) {
       })
     }
 
+    // Handle media
+    const mediaMatches = Array.from(content.matchAll(mediaRegex))
+    if (mediaMatches.length > 0) {
+      mediaMatches.forEach((mediaMatch, idx) => {
+        const mediaFiles = mediaMatch[1].split(", ")
+        parts.push(
+          <div key={`media-${idx}`} className="my-2 p-3 border border-purple-500/40 bg-purple-500/10 rounded">
+            <div className="text-xs text-purple-400 font-bold mb-2">[MEDIA_ATTACHED]</div>
+            <div className="flex flex-wrap gap-2">
+              {mediaFiles.map((file, i) => (
+                <span key={i} className="inline-block px-2 py-1 bg-purple-500/20 border border-purple-500/40 rounded text-xs text-purple-300">
+                  📎 {file}
+                </span>
+              ))}
+            </div>
+          </div>,
+        )
+      })
+    }
+
     // Add remaining content
     if (lastIndex < content.length) {
-      parts.push(
-        <span key="text-end" className="text-green-300">
-          {content.slice(lastIndex)}
-        </span>,
-      )
+      const remaining = content.slice(lastIndex).replace(mediaRegex, "").trim()
+      if (remaining) {
+        parts.push(
+          <span key="text-end" className="text-green-300">
+            {remaining}
+          </span>,
+        )
+      }
     }
 
     // If no special formatting, just return plain text
