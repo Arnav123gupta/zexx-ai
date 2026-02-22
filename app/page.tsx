@@ -414,7 +414,8 @@ export default function Home() {
 
     let messageContent = inputText
     if (uploadedMedia.length > 0) {
-      messageContent += `\n[MEDIA ATTACHED: ${uploadedMedia.length} image(s)]`
+      const mediaList = uploadedMedia.map((m) => `${m.name}`).join(", ")
+      messageContent += messageContent ? `\n\n[MEDIA_ATTACHED] ${mediaList}` : `[MEDIA_ATTACHED] ${mediaList}`
     }
 
     const userMessage: ChatMessage = {
@@ -813,7 +814,7 @@ export default function Home() {
               <button
                 onClick={(e) => handleSubmit(e)}
                 className="terminal-button"
-                disabled={!inputText.trim() || isLoading}
+                disabled={(!inputText.trim() && uploadedMedia.length === 0) || isLoading}
               >
                 [SEND]
               </button>
