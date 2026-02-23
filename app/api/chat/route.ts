@@ -4,11 +4,15 @@ export async function POST(request: NextRequest) {
   try {
     const { message, chatHistory, media } = await request.json()
 
-    if (!message || typeof message !== "string" || message.trim().length === 0) {
-      return NextResponse.json({ error: "Invalid message" }, { status: 400 })
+    // Allow messages with media even if text is empty
+    if ((!message || typeof message !== "string" || message.trim().length === 0) && (!media || media.length === 0)) {
+      return NextResponse.json({ error: "Invalid message or media" }, { status: 400 })
     }
 
-    const sanitizedMessage = message.trim().substring(0, 1000)
+    const sanitizedMessage = (message || "").trim().substring(0, 1000)
+    
+    // If no text but media exists, create default message
+    let userMessage = sanitizedMessage || "[Media only - analyzing attached files...]"
     
     // Build media context if images are provided
     let mediaContext = ""
@@ -17,9 +21,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Detect language preference (Hinglish, English, or mixed)
-    const isHinglish = /[ा-ॿ]|help kro|fix kar|sari|kya|kaise|kar do|hta|bta|chnge|upgrde|fix kro|likha|niche|likhe|sab kuch|add kro|puch|aur|par|jo|hai|nahi|hna|krta|krte|likh|tik|acha|bura|kb|jb|bs|ab|to|bhi/.test(sanitizedMessage.toLowerCase())
+    const isHinglish = /[ा-ॿ]|help kro|fix kar|sari|kya|kaise|kar do|hta|bta|chnge|upgrde|fix kro|likha|niche|likhe|sab kuch|add kro|puch|aur|par|jo|hai|nahi|hna|krta|krte|likh|tik|acha|bura|kb|jb|bs|ab|to|bhi/.test(userMessage.toLowerCase())
 
-    console.log("[v0] Chat API called with message:", sanitizedMessage)
+    console.log("[v0] Chat API called with message:", userMessage)
+    console.log("[v0] Media attached:", media?.length || 0)
     if (isHinglish) {
       console.log("[v0] Language detected: Hinglish")
     }
@@ -82,7 +87,7 @@ HINGLISH RESPONSES:
       },
       {
         role: "user",
-        content: sanitizedMessage,
+        content: userMessage,
       },
     ]
 
@@ -94,7 +99,7 @@ HINGLISH RESPONSES:
 
     const isKaliQuery =
       /kali|metasploit|nmap|burp|wireshark|aircrack|hydra|sqlmap|hashcat|john|exploit|penetration|hacking|linux security|reverse engineering|subfinder|nuclei|amass|recon|osint/i.test(
-        sanitizedMessage,
+        userMessage,
       )
 
     if (hasGroqKey) {
