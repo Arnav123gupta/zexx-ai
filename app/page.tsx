@@ -850,7 +850,7 @@ export default function Home() {
                   <div>2. Grok-2 (Secondary)</div>
                   <div>3. GPT-4o (Tertiary)</div>
                   <div>4. Offline Mode (Fallback)</div>
-                  <div>Max Tokens: 1000</div>
+                  <div>Max Tokens: 100000</div>
                   <div>Power Level: MAXIMUM</div>
                 </div>
               </div>

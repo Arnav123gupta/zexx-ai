@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid message or media" }, { status: 400 })
     }
 
-    const sanitizedMessage = (message || "").trim().substring(0, 1000)
+    const sanitizedMessage = (message || "").trim().substring(0, 100000)
     
     // If no text but media exists, create default message
     let userMessage = sanitizedMessage || "[Media only - analyzing attached files...]"
