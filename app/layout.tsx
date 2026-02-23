@@ -9,9 +9,9 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "HEAVEN NETWORK - Hacker Terminal",
-  description: "Advanced AI Terminal Interface for Ethical Hackers",
-  generator: "HEAVEN NETWORK",
+  title: "PENTEST GPT - Penetration Testing AI",
+  description: "Expert AI Assistant for Penetration Testing, Vulnerability Assessment, and Offensive Security Research",
+  generator: "PENTEST GPT",
 }
 
 export default function RootLayout({
