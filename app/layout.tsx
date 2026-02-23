@@ -9,9 +9,9 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "PENTEST GPT - Penetration Testing AI",
-  description: "Expert AI Assistant for Penetration Testing, Vulnerability Assessment, and Offensive Security Research",
-  generator: "PENTEST GPT",
+  title: "NETWORK GPT - Penetration Testing & Bug Bounty AI",
+  description: "Expert AI Assistant for Penetration Testing, Bug Bounty Hunting, Vulnerability Assessment, and Offensive Security Research",
+  generator: "NETWORK GPT",
 }
 
 export default function RootLayout({
