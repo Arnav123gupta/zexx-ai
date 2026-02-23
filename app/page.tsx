@@ -190,7 +190,7 @@ export default function Home() {
       id: "welcome",
       type: "system",
       content:
-        "🎯 Welcome to PENTEST GPT! I'm your specialized AI assistant for penetration testing, bug bounty hunting, vulnerability assessment, and offensive security research. I provide expert guidance on reconnaissance, exploitation, post-exploitation, Kali Linux tools, HackerOne/Bugcrowd strategies, and offensive security methodology. Click the microphone to start voice interaction or type your penetration testing or bug bounty queries!",
+        "🎯 Welcome to NETWORK GPT! I'm your specialized AI assistant for penetration testing, bug bounty hunting, vulnerability assessment, and offensive security research. I provide expert guidance on reconnaissance, exploitation, post-exploitation, Kali Linux tools, HackerOne/Bugcrowd strategies, and offensive security methodology. Click the microphone to start voice interaction or type your penetration testing or bug bounty queries!",
       timestamp: new Date(),
     }
     createNewConversation()
@@ -389,7 +389,7 @@ export default function Home() {
           const startMessage: ChatMessage = {
             id: Date.now().toString(),
             type: "system",
-            content:         "🎤 Voice recognition started! Say 'PENTEST' to wake me up, then speak your penetration testing query.",
+            content:         "🎤 Voice recognition started! Say 'NETWORK' to wake me up, then speak your penetration testing or bug bounty query.",
             timestamp: new Date(),
           }
           saveMessageToConversation(startMessage)
@@ -577,8 +577,8 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-green-500 animate-pulse" />
-              <h1 className="text-2xl font-bold text-green-400 tracking-wider">⚡ PENTEST GPT ⚡</h1>
-            <span className="text-xs text-green-600">made by 4st_destroyer_owner ARNAV</span>
+              <h1 className="text-2xl font-bold text-green-400 tracking-wider">⚡ NETWORK GPT ⚡</h1>
+              <span className="text-xs text-green-600">made by ARNAV</span>
           </div>
           <div className="text-xs text-green-600 font-mono">[SYSTEM ONLINE]</div>
         </div>
@@ -591,7 +591,7 @@ export default function Home() {
             <span className="text-cyan-400">{">"}</span>
             <span className="text-green-400 ml-2 animate-pulse">SYSTEM INITIALIZED</span>
           </div>
-          <h1 className="text-5xl font-bold text-green-400 glow-green mb-2">P3NT3ST GPT v1.0</h1>
+              <h1 className="text-5xl font-bold text-green-400 glow-green mb-2">N3TW0RK GPT v2.0</h1>
           <div className="flex items-center justify-between">
             <div className="text-xs text-cyan-400 font-mono">
               <div>{">>>"} Penetration Testing Terminal | Authorized Testing Only</div>
@@ -599,7 +599,7 @@ export default function Home() {
               <div className="mt-1">{">>>"} Methodology: Recon → Scanning → Enumeration → Exploitation → Post-Exploitation</div>
             </div>
             <div className="text-right text-xs text-purple-400">
-              <div>ADMIN: 4st_destroyer_owner ARNAV</div>
+                <div>ADMIN: ARNAV</div>
               <div className="glow-purple">STATUS: MAXIMUM CAPACITY</div>
             </div>
           </div>
@@ -868,6 +868,6 @@ const sampleQuestions = [
     question: "What is artificial intelligence?",
     description: "Learn about AI and machine learning",
     example:
-        "Hello! I am PENTEST GPT, your specialized AI assistant for penetration testing and offensive security. I can help with reconnaissance, vulnerability scanning, exploitation, post-exploitation, and all aspects of authorized penetration testing!",
+        "Hello! I am NETWORK GPT, your specialized AI assistant for penetration testing, bug bounty hunting, and offensive security. I can help with reconnaissance, vulnerability scanning, exploitation, post-exploitation, and all aspects of authorized penetration testing and bug bounty submissions!",
   },
 ]

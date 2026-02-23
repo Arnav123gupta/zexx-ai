@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const messages = [
       {
         role: "system",
-        content: `You are PENTEST GPT, a specialized AI assistant expert in penetration testing, vulnerability assessment, and offensive security.${mediaContext}
+        content: `You are NETWORK GPT, a specialized AI assistant expert in penetration testing, vulnerability assessment, and offensive security.${mediaContext}
 
 ETHICAL DISCLAIMER:
 - All guidance assumes you have explicit written authorization for testing
@@ -281,7 +281,7 @@ HINGLISH RESPONSES:
       "likha aye": "Likha jayega! Kya likhaana hai bataiye.",
       "sab kuch": "Bilkul sab kuch! Isko properly handle karunga.",
       "tik hai": "Theek hai! Main aage badhta hoon.",
-      "default hinglish": "Namaste! PENTEST GPT yahan hoon aapki penetration testing aur bug bounty hunting journey mein help karne ke liye. Mujhe reconnaissance, exploitation, HackerOne/Bugcrowd strategies, XSS, SQLi, SSRF, logic bugs, aur kali linux tools ke baare mein pooch sakte ho. OSINT, nmap, burp suite, recon-ng, subfinder - sab kuch detail mein samjhata hoon! Kya specific vulnerability ya bug hunting platform ka question hai?",
+      "default hinglish": "Namaste! NETWORK GPT yahan hoon aapki penetration testing aur bug bounty hunting journey mein help karne ke liye. Mujhe reconnaissance, exploitation, HackerOne/Bugcrowd strategies, XSS, SQLi, SSRF, logic bugs, aur kali linux tools ke baare mein pooch sakte ho. OSINT, nmap, burp suite, recon-ng, subfinder - sab kuch detail mein samjhata hoon! Kya specific vulnerability ya bug hunting platform ka question hai?",
     }
 
     const offlineResponses: Record<string, string> = {
@@ -331,7 +331,7 @@ HINGLISH RESPONSES:
         "Docker in Kali: 'docker pull kalilinux/kali-rolling', 'docker run -it kalilinux/kali-rolling bash' interactive shell, mount volume with '-v /path:/mnt'. Pentesting containers: 'docker inspect container_name', escape techniques, privilege escalation from container. Automation: Dockerfile for custom Kali images, docker-compose for multi-container labs.",
       git: "Git version control for security: 'git clone repo', 'git log --all --oneline' history, 'git diff' changes, finding secrets with 'git log --all -S password', 'git history-search' plugin. Security: Protect sensitive data, use SSH keys, .gitignore for secrets, GPG signing commits.",
       "default response":
-        "I'm PENTEST GPT, your specialized penetration testing and bug bounty hunting AI assistant. I provide expert guidance on full-scope penetration testing methodology (reconnaissance to post-exploitation), bug bounty hunting workflows on platforms like HackerOne & Bugcrowd, OWASP Top 10 vulnerabilities, Kali Linux tools, privilege escalation, payload generation, wireless hacking, API security, mobile security, logic bugs, and compliance frameworks. I cover both authorized penetration tests and bug bounty submissions. All testing assumes explicit authorization. Ask me about exploitation techniques, vulnerability discovery, bug bounty strategies, or security research!",
+        "I'm NETWORK GPT, your specialized penetration testing and bug bounty hunting AI assistant. I provide expert guidance on full-scope penetration testing methodology (reconnaissance to post-exploitation), bug bounty hunting workflows on platforms like HackerOne & Bugcrowd, OWASP Top 10 vulnerabilities, Kali Linux tools, privilege escalation, payload generation, wireless hacking, API security, mobile security, logic bugs, and compliance frameworks. I cover both authorized penetration tests and bug bounty submissions. All testing assumes explicit authorization. Ask me about exploitation techniques, vulnerability discovery, bug bounty strategies, or security research!",
     }
 
     const lowerMessage = sanitizedMessage.toLowerCase()
