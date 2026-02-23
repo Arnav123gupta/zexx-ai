@@ -190,7 +190,7 @@ export default function Home() {
       id: "welcome",
       type: "system",
       content:
-        "🌟 Welcome to HEAVEN NETWORK! I'm your AI assistant ready to answer questions, have conversations, and help with various topics. I can discuss science, technology, programming, history, and much more. Click the microphone to start voice interaction or just type your message!",
+        "🎯 Welcome to PENTEST GPT! I'm your specialized AI assistant for penetration testing, vulnerability assessment, and offensive security research. I provide expert guidance on reconnaissance, exploitation, post-exploitation, Kali Linux tools, and offensive security methodology. Click the microphone to start voice interaction or type your penetration testing queries!",
       timestamp: new Date(),
     }
     createNewConversation()
@@ -389,7 +389,7 @@ export default function Home() {
           const startMessage: ChatMessage = {
             id: Date.now().toString(),
             type: "system",
-            content: "🎤 Voice recognition started! Say 'HEAVEN NETWORK' to wake me up, then speak your message.",
+            content:         "🎤 Voice recognition started! Say 'PENTEST' to wake me up, then speak your penetration testing query.",
             timestamp: new Date(),
           }
           saveMessageToConversation(startMessage)
@@ -577,7 +577,7 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-green-500 animate-pulse" />
-            <h1 className="text-2xl font-bold text-green-400 tracking-wider">⚡ HEAVEN NETWORK ⚡</h1>
+              <h1 className="text-2xl font-bold text-green-400 tracking-wider">⚡ PENTEST GPT ⚡</h1>
             <span className="text-xs text-green-600">made by 4st_destroyer_owner ARNAV</span>
           </div>
           <div className="text-xs text-green-600 font-mono">[SYSTEM ONLINE]</div>
@@ -591,12 +591,12 @@ export default function Home() {
             <span className="text-cyan-400">{">"}</span>
             <span className="text-green-400 ml-2 animate-pulse">SYSTEM INITIALIZED</span>
           </div>
-          <h1 className="text-5xl font-bold text-green-400 glow-green mb-2">H34V3N N3TW0RK v3.0</h1>
+          <h1 className="text-5xl font-bold text-green-400 glow-green mb-2">P3NT3ST GPT v1.0</h1>
           <div className="flex items-center justify-between">
             <div className="text-xs text-cyan-400 font-mono">
-              <div>{">>>"} Advanced AI Terminal | Max Power Mode Enabled</div>
+              <div>{">>>"} Penetration Testing Terminal | Authorized Testing Only</div>
               <div className="mt-1">{">>>"} Multi-Provider | Groq-70B | Grok-2 | GPT-4o</div>
-              <div className="mt-1">{">>>"} Token Limit: 1000 | Temperature: 0.8 | Response: Comprehensive</div>
+              <div className="mt-1">{">>>"} Methodology: Recon → Scanning → Enumeration → Exploitation → Post-Exploitation</div>
             </div>
             <div className="text-right text-xs text-purple-400">
               <div>ADMIN: 4st_destroyer_owner ARNAV</div>
@@ -868,6 +868,6 @@ const sampleQuestions = [
     question: "What is artificial intelligence?",
     description: "Learn about AI and machine learning",
     example:
-      "Hello! I am HEAVEN NETWORK, your AI knowledge assistant. I can answer questions on science, technology, programming, history, and many other topics!",
+        "Hello! I am PENTEST GPT, your specialized AI assistant for penetration testing and offensive security. I can help with reconnaissance, vulnerability scanning, exploitation, post-exploitation, and all aspects of authorized penetration testing!",
   },
 ]
