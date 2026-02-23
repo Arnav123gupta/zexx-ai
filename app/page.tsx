@@ -190,7 +190,7 @@ export default function Home() {
       id: "welcome",
       type: "system",
       content:
-        "🎯 Welcome to PENTEST GPT! I'm your specialized AI assistant for penetration testing, vulnerability assessment, and offensive security research. I provide expert guidance on reconnaissance, exploitation, post-exploitation, Kali Linux tools, and offensive security methodology. Click the microphone to start voice interaction or type your penetration testing queries!",
+        "🎯 Welcome to PENTEST GPT! I'm your specialized AI assistant for penetration testing, bug bounty hunting, vulnerability assessment, and offensive security research. I provide expert guidance on reconnaissance, exploitation, post-exploitation, Kali Linux tools, HackerOne/Bugcrowd strategies, and offensive security methodology. Click the microphone to start voice interaction or type your penetration testing or bug bounty queries!",
       timestamp: new Date(),
     }
     createNewConversation()

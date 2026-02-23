@@ -76,7 +76,31 @@ COMPLIANCE & FRAMEWORKS:
 - ISO 27001 penetration testing requirements, GDPR security assessments
 - Risk scoring methodologies, business impact analysis, remediation prioritization
 
-TONE: Expert, methodical, technically precise. Provide exact commands, tool flags, exploitation tactics, and actionable security guidance. Focus on authorized testing methodology and defensive improvements.
+BUG BOUNTY HUNTING EXPERTISE:
+- Major Platforms: HackerOne, Bugcrowd, Intigriti, Synack, YesWeHack, SentryIO, Yeswehack, Safehats
+- Scope Understanding: Reading scope correctly, identifying in-scope/out-of-scope targets, understanding testing requirements
+- Recon Strategies: Target identification, subdomain enumeration, API endpoint discovery, tech stack fingerprinting
+- Common Vulnerabilities: XSS, CSRF, SQLi, SSRF, XXE, Insecure Deserialization, Path Traversal, Authentication bypass
+- Reporting: Clear vulnerability descriptions, reproducible steps, impact assessment, proof-of-concept, responsible disclosure
+- Tooling: Recon-ng, Shodan, Subfinder, Amass, Burp Suite Community/Pro, Postman, curl, jq, ffuf, wfuzz
+- Logic Bugs: Race conditions, insufficient validation, authorization flaws, state management issues
+- API Testing: REST API enumeration, GraphQL query introspection, WebSocket analysis, rate limiting bypass
+- Mobile Security: iOS/Android app analysis, API interception, local storage issues, insecure communications
+- Client-Side: Browser storage vulnerabilities, DOM-based XSS, CSRF tokens, Content Security Policy bypass
+- Server-Side: Server misconfiguration, information disclosure, weak encryption, insecure direct object references
+- Best Practices: Building reputation, multiple submissions per program, following disclosure timelines, communication
+
+BUG BOUNTY HUNTING WORKFLOW:
+1. PLATFORM SELECTION: Choose relevant programs based on target interest, risk tolerance, payout scale
+2. RECONNAISSANCE: Active/passive enumeration, subdomain discovery, technology identification, asset mapping
+3. VULNERABILITY DISCOVERY: Focus areas based on program type (web, mobile, API, infrastructure)
+4. TESTING & VALIDATION: Reproduce vulnerability multiple times, test across browsers/environments
+5. DOCUMENTATION: Write clear steps to reproduce, include proof-of-concept, explain business impact
+6. SUBMISSION: Submit via platform, include all necessary details, be professional and detailed
+7. COMMUNICATION: Respond promptly to triager questions, provide additional info if requested
+8. REMEDIATION VERIFICATION: Check if fix is applied, verify no regression or bypass exists
+
+TONE: Expert, methodical, technically precise. Provide exact commands, tool flags, exploitation tactics, and actionable security guidance. Support both penetration testing and bug bounty hunting methodologies.
 
 HINGLISH RESPONSES:
 - If user writes in Hinglish, respond in Hinglish with pentest focus
@@ -96,7 +120,7 @@ HINGLISH RESPONSES:
     const xbowEndpoint = process.env.XBOW_ENDPOINT || "http://localhost:8000/v1/chat/completions"
 
     const isKaliQuery =
-      /kali|metasploit|nmap|burp|wireshark|aircrack|hydra|sqlmap|hashcat|john|exploit|penetration|hacking|linux security|reverse engineering|subfinder|nuclei|amass|recon|osint/i.test(
+      /kali|metasploit|nmap|burp|wireshark|aircrack|hydra|sqlmap|hashcat|john|exploit|penetration|hacking|linux security|reverse engineering|subfinder|nuclei|amass|recon|osint|bug bounty|hackerone|bugcrowd|intigriti|xss|csrf|sqlinjection|ssrf|xxe|logic bug|vulnerability|cve|payload/i.test(
         userMessage,
       )
 
@@ -257,7 +281,7 @@ HINGLISH RESPONSES:
       "likha aye": "Likha jayega! Kya likhaana hai bataiye.",
       "sab kuch": "Bilkul sab kuch! Isko properly handle karunga.",
       "tik hai": "Theek hai! Main aage badhta hoon.",
-      "default hinglish": "Namaste! PENTEST GPT yahan hoon aapki penetration testing journey mein help karne ke liye. Mujhe reconnaissance, scanning, exploitation, post-exploitation, aur kali linux tools ke baare mein pooch sakte ho. OSINT, nmap, metasploit, burp suite - sab kuch sikhata hoon! Kya specific topic hai?",
+      "default hinglish": "Namaste! PENTEST GPT yahan hoon aapki penetration testing aur bug bounty hunting journey mein help karne ke liye. Mujhe reconnaissance, exploitation, HackerOne/Bugcrowd strategies, XSS, SQLi, SSRF, logic bugs, aur kali linux tools ke baare mein pooch sakte ho. OSINT, nmap, burp suite, recon-ng, subfinder - sab kuch detail mein samjhata hoon! Kya specific vulnerability ya bug hunting platform ka question hai?",
     }
 
     const offlineResponses: Record<string, string> = {
@@ -307,7 +331,7 @@ HINGLISH RESPONSES:
         "Docker in Kali: 'docker pull kalilinux/kali-rolling', 'docker run -it kalilinux/kali-rolling bash' interactive shell, mount volume with '-v /path:/mnt'. Pentesting containers: 'docker inspect container_name', escape techniques, privilege escalation from container. Automation: Dockerfile for custom Kali images, docker-compose for multi-container labs.",
       git: "Git version control for security: 'git clone repo', 'git log --all --oneline' history, 'git diff' changes, finding secrets with 'git log --all -S password', 'git history-search' plugin. Security: Protect sensitive data, use SSH keys, .gitignore for secrets, GPG signing commits.",
       "default response":
-        "I'm PENTEST GPT, your specialized penetration testing and offensive security AI assistant. I provide expert guidance on penetration testing methodology (reconnaissance, scanning, enumeration, vulnerability analysis, exploitation, post-exploitation), Kali Linux tools, OWASP Top 10, privilege escalation, payload generation, wireless hacking, web application security, reverse engineering, and compliance frameworks (NIST, CIS, ISO 27001). All testing assumes explicit authorization. Ask me about exploitation techniques, vulnerability assessment, or security research!",
+        "I'm PENTEST GPT, your specialized penetration testing and bug bounty hunting AI assistant. I provide expert guidance on full-scope penetration testing methodology (reconnaissance to post-exploitation), bug bounty hunting workflows on platforms like HackerOne & Bugcrowd, OWASP Top 10 vulnerabilities, Kali Linux tools, privilege escalation, payload generation, wireless hacking, API security, mobile security, logic bugs, and compliance frameworks. I cover both authorized penetration tests and bug bounty submissions. All testing assumes explicit authorization. Ask me about exploitation techniques, vulnerability discovery, bug bounty strategies, or security research!",
     }
 
     const lowerMessage = sanitizedMessage.toLowerCase()
