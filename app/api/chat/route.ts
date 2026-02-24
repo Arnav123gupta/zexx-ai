@@ -1,12 +1,53 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+// Security and performance headers for API responses
+function getSecurityHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { message, chatHistory, media } = await request.json()
+    let requestData
+    try {
+      requestData = await request.json()
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid request format" },
+        { status: 400, headers: getSecurityHeaders() },
+      )
+    }
+
+    const { message, chatHistory, media } = requestData
+
+    // Validate input types
+    if (chatHistory && !Array.isArray(chatHistory)) {
+      return NextResponse.json(
+        { error: "Invalid chat history format" },
+        { status: 400, headers: getSecurityHeaders() },
+      )
+    }
+
+    if (media && !Array.isArray(media)) {
+      return NextResponse.json(
+        { error: "Invalid media format" },
+        { status: 400, headers: getSecurityHeaders() },
+      )
+    }
 
     // Allow messages with media even if text is empty
     if ((!message || typeof message !== "string" || message.trim().length === 0) && (!media || media.length === 0)) {
-      return NextResponse.json({ error: "Invalid message or media" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Message or media is required" },
+        { status: 400, headers: getSecurityHeaders() },
+      )
     }
 
     const sanitizedMessage = (message || "").trim().substring(0, 100000)
@@ -23,11 +64,7 @@ export async function POST(request: NextRequest) {
     // Detect language preference (Hinglish, English, or mixed)
     const isHinglish = /[ा-ॿ]|help kro|fix kar|sari|kya|kaise|kar do|hta|bta|chnge|upgrde|fix kro|likha|niche|likhe|sab kuch|add kro|puch|aur|par|jo|hai|nahi|hna|krta|krte|likh|tik|acha|bura|kb|jb|bs|ab|to|bhi/.test(userMessage.toLowerCase())
 
-    console.log("[v0] Chat API called with message:", userMessage)
-    console.log("[v0] Media attached:", media?.length || 0)
-    if (isHinglish) {
-      console.log("[v0] Language detected: Hinglish")
-    }
+
 
     const messages = [
       {
@@ -178,21 +215,22 @@ HINGLISH RESPONSES:
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
-          console.log("[v0] xAI API error:", response.status, errorData)
         } else {
           const data = await response.json()
           const text = data.choices?.[0]?.message?.content || "Response processed."
 
-          console.log("[v0] XAI API SUCCESS - ONLINE MODE ACTIVE")
-          return NextResponse.json({
-            response: text,
-            provider: "xai-grok-2",
-            status: "online",
-            timestamp: new Date().toISOString(),
-          })
+          return NextResponse.json(
+            {
+              response: text,
+              provider: "xai-grok-2",
+              status: "online",
+              timestamp: new Date().toISOString(),
+            },
+            { headers: getSecurityHeaders() },
+          )
         }
       } catch (error) {
-        console.log("[v0] xAI connection error:", error instanceof Error ? error.message : "Unknown error")
+        // Silently continue to next provider
       }
     }
 
@@ -213,21 +251,22 @@ HINGLISH RESPONSES:
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
-          console.log("[v0] Xbow/Xaibo API error:", response.status, errorData)
         } else {
           const data = await response.json()
           const text = data.choices?.[0]?.message?.content || "Response processed."
 
-          console.log("[v0] XBOW/XAIBO MODULAR AI SUCCESS - ONLINE MODE ACTIVE")
-          return NextResponse.json({
-            response: text,
-            provider: "xbow-xaibo-modular-agent",
-            status: "online",
-            timestamp: new Date().toISOString(),
-          })
+          return NextResponse.json(
+            {
+              response: text,
+              provider: "xbow-xaibo-modular-agent",
+              status: "online",
+              timestamp: new Date().toISOString(),
+            },
+            { headers: getSecurityHeaders() },
+          )
         }
       } catch (error) {
-        console.log("[v0] Xbow/Xaibo connection error:", error instanceof Error ? error.message : "Unknown error")
+        // Silently continue to next provider
       }
     }
 
@@ -381,7 +420,9 @@ HINGLISH RESPONSES:
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("[v0] Chat API error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500, headers: getSecurityHeaders() },
+    )
   }
 }
