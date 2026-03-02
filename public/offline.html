@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <title>Heaven Network AI - Offline</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      body {
+        background-color: #000000;
+        color: #00ff88;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Scanlines effect */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.15) 0px,
+          rgba(0, 0, 0, 0.15) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 600px;
+        z-index: 2;
+        position: relative;
+      }
+
+      .terminal {
+        border: 2px solid #00ff88;
+        border-radius: 8px;
+        padding: 40px;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      }
+
+      h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+      }
+
+      .status {
+        font-size: 18px;
+        color: #ff6b6b;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .message {
+        font-size: 14px;
+        color: #00dd77;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      .code {
+        background: rgba(0, 255, 136, 0.1);
+        border-left: 3px solid #00ff88;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: left;
+        font-size: 12px;
+        border-radius: 4px;
+        color: #00ff88;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+
+      button {
+        background: #00ff88;
+        color: #000000;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: #00dd77;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .secondary {
+        background: transparent;
+        border: 2px solid #00ff88;
+        color: #00ff88;
+      }
+
+      .secondary:hover {
+        background: rgba(0, 255, 136, 0.1);
+      }
+
+      .cursor {
+        display: inline-block;
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .terminal {
+          padding: 25px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        .status {
+          font-size: 16px;
+        }
+
+        .message {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="terminal">
+        <h1>⚡ HEAVEN NETWORK AI</h1>
+        <div class="status">⚠ OFFLINE MODE</div>
+
+        <div class="message">
+          <p>You are currently offline. Some features may not be available.</p>
+        </div>
+
+        <div class="code">
+          <div>$ hacking_status: OFFLINE</div>
+          <div>$ waiting_for_connection...</div>
+          <div style="margin-top: 8px">
+            <span class="cursor">▌</span>
+          </div>
+        </div>
+
+        <div class="message">
+          <p>Please check your internet connection and try again. Your chat history is safely cached locally.</p>
+        </div>
+
+        <div class="actions">
+          <button onclick="location.reload()">Try Again</button>
+          <button class="secondary" onclick="history.back()">Go Back</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

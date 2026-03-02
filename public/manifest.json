@@ -1,12 +1,12 @@
 {
-  "name": "NETWORK GPT - Penetration Testing & Bug Bounty AI",
-  "short_name": "NETWORK GPT",
-  "description": "Expert AI assistant for penetration testing, bug bounty hunting, vulnerability assessment, and offensive security research. Professional hacker toolkit with terminal interface.",
+  "name": "Heaven Network AI",
+  "short_name": "HN AI",
+  "description": "Advanced AI Terminal by Zexx Tech Stack - Professional AI chatbot with real-time responses and intelligent conversation.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#000000",
+  "theme_color": "#00ff88",
   "background_color": "#000000",
   "prefer_related_applications": false,
   "icons": [

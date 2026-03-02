@@ -126,12 +126,12 @@
 
 ## Production Environment Variables
 
-```env
+\`\`\`env
 GROQ_API_KEY=xxxxxxxxxxxxx
 XAI_API_KEY=xxxxxxxxxxxxx
 ELEVENLABS_API_KEY=xxxxxxxxxxxxx
 GOOGLE_SEARCH_API_KEY=xxxxxxxxxxxxx
-```
+\`\`\`
 
 ## Deployment Steps
 

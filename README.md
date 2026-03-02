@@ -40,37 +40,37 @@ Advanced AI assistant specialized in penetration testing, vulnerability assessme
 
 ### Installation
 
-```bash
+\`\`\`bash
 git clone https://github.com/Arnav123gupta/zexx-ai.git
 cd zexx-ai
 npm install
-```
+\`\`\`
 
 ### Environment Setup
 
 Create `.env.local` in the root directory:
 
-```env
+\`\`\`env
 GROQ_API_KEY=your_groq_api_key
 XAI_API_KEY=your_xai_api_key
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
 GOOGLE_SEARCH_API_KEY=your_google_search_api_key
-```
+\`\`\`
 
 ### Development Server
 
-```bash
+\`\`\`bash
 npm run dev
-```
+\`\`\`
 
 Navigate to [http://localhost:3000](http://localhost:3000)
 
 ### Production Build
 
-```bash
+\`\`\`bash
 npm run build
 npm run start
-```
+\`\`\`
 
 ## API Documentation
 
@@ -79,50 +79,50 @@ npm run start
 Send penetration testing or bug bounty hunting queries.
 
 **Request:**
-```json
+\`\`\`json
 {
   "message": "Your penetration testing query",
   "media": [{"name": "screenshot.png", "type": "image/png"}]
 }
-```
+\`\`\`
 
 **Response:**
-```json
+\`\`\`json
 {
   "response": "Detailed expert response...",
   "provider": "groq-70b",
   "language": "english",
   "timestamp": "2026-02-24T10:30:00Z"
 }
-```
+\`\`\`
 
 ### POST /api/speak
 
 Convert response text to speech.
 
 **Request:**
-```json
+\`\`\`json
 {
   "text": "Your text to convert to speech"
 }
-```
+\`\`\`
 
 ## Usage Examples
 
 ### Penetration Testing
-```
+\`\`\`
 "Guide me through subdomain enumeration using Shodan and Recon-ng"
-```
+\`\`\`
 
 ### Bug Bounty Strategy
-```
+\`\`\`
 "Common authorization bypass vulnerabilities in modern web frameworks"
-```
+\`\`\`
 
 ### Hinglish Query
-```
+\`\`\`
 "Burp Suite mein intruder attack ke liye payload generation kaise karenge?"
-```
+\`\`\`
 
 ### Media Analysis
 Upload screenshot → "Analyze this HTTP request for CSRF vulnerability"
@@ -147,18 +147,18 @@ Upload screenshot → "Analyze this HTTP request for CSRF vulnerability"
 
 ### Deploy to Vercel
 
-```bash
+\`\`\`bash
 git push origin main
-```
+\`\`\`
 
 Changes automatically deploy to Vercel via GitHub integration.
 
 ### Manual Deployment
 
-```bash
+\`\`\`bash
 npm run build
 vercel --prod
-```
+\`\`\`
 
 ## Contributing
 
