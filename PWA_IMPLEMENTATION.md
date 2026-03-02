@@ -103,11 +103,11 @@ The PWA is production-ready for Vercel deployment:
    - Manifest.json has correct headers
 
 3. **Deployment Steps**
-   ```bash
+   \`\`\`bash
    npm run build
    npm run start
    # Or push to GitHub for automatic Vercel deployment
-   ```
+   \`\`\`
 
 ## Environment Variables
 
