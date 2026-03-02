@@ -78,6 +78,7 @@ export default function Home() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null)
   const [showSidebar, setShowSidebar] = useState(true)
   const [uploadedMedia, setUploadedMedia] = useState<Array<{id: string; url: string; type: 'image' | 'screenshot'; name: string}>>([])
+  const [userHasTyped, setUserHasTyped] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -670,7 +671,11 @@ export default function Home() {
             {/* Chat display area */}
             <div className="flex-1 overflow-y-auto w-full">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4 h-full">
-                <div className="md:col-span-3 border border-green-500/40 bg-black/80 backdrop-blur-sm">
+                <div className={`md:col-span-3 border transition-all duration-500 ${
+                  userHasTyped 
+                    ? 'border-green-500/40 bg-black/80 backdrop-blur-sm' 
+                    : 'border-green-500/20 bg-black/20 backdrop-blur-none'
+                }`}>
                   <div className="border-b border-green-500/30 px-4 py-2 flex items-center justify-between">
                     <span className="text-xs text-cyan-400 font-bold">[CHAT_CONSOLE]</span>
                     <span className="text-xs text-green-500/60 glow-green">ACTIVE</span>
@@ -709,7 +714,11 @@ export default function Home() {
 
                 {/* System Status Panel - Hidden on mobile */}
                 <div className="hidden md:block space-y-4">
-                  <div className="border border-purple-500/40 bg-black/80 backdrop-blur-sm">
+                  <div className={`border transition-all duration-500 ${
+                    userHasTyped 
+                      ? 'border-purple-500/40 bg-black/80 backdrop-blur-sm' 
+                      : 'border-purple-500/20 bg-black/20 backdrop-blur-none'
+                  }`}>
                     <div className="border-b border-purple-500/30 px-4 py-2">
                       <span className="text-xs text-purple-400 font-bold">[SYS_STATUS]</span>
                     </div>
@@ -745,7 +754,11 @@ export default function Home() {
         </div>
 
         {/* Terminal Input */}
-        <div className="border border-green-500/40 bg-black/80 backdrop-blur-sm">
+        <div className={`border transition-all duration-500 ${
+          userHasTyped 
+            ? 'border-green-500/40 bg-black/80 backdrop-blur-sm' 
+            : 'border-green-500/20 bg-black/20 backdrop-blur-none'
+        }`}>
           <div className="border-b border-green-500/30 px-4 py-2">
             <span className="text-xs text-green-400 font-bold">[INPUT_STREAM]</span>
           </div>
@@ -781,7 +794,12 @@ export default function Home() {
                 ref={inputRef}
                 type="text"
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e) => {
+                  setInputText(e.target.value)
+                  if (e.target.value.length > 0) {
+                    setUserHasTyped(true)
+                  }
+                }}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") handleSubmit(e)
                   if (e.key === "?") setShowHelp(!showHelp)
