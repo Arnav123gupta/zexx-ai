@@ -56,7 +56,7 @@ NETWORK GPT is fully configured as a Progressive Web App with complete offline s
 
 ## File Structure
 
-```
+\`\`\`
 project/
 ├── public/
 │   ├── manifest.json          # PWA manifest with icons and configuration
@@ -71,17 +71,17 @@ project/
 │   └── [routes]
 ├── next.config.mjs            # PWA optimizations and caching headers
 └── [configuration files]
-```
+\`\`\`
 
 ## Development
 
 ### Local Testing
 
 1. **Build the project**:
-   ```bash
+   \`\`\`bash
    npm run build
    npm run start
-   ```
+   \`\`\`
 
 2. **Test service worker** (Chrome DevTools):
    - Open DevTools (F12)
@@ -103,9 +103,9 @@ project/
 ### Production Deployment (Vercel)
 
 1. **Build and deploy**:
-   ```bash
+   \`\`\`bash
    git push origin main
-   ```
+   \`\`\`
 
 2. **Verify PWA on Vercel**:
    - Visit deployed URL
