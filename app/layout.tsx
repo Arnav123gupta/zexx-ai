@@ -4,6 +4,7 @@ import { JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ServiceWorkerRegister } from "./service-worker-register"
 import { InstallApp } from "@/components/install-app"
+import { AppWrapper } from "@/components/app-wrapper"
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -63,8 +64,10 @@ html {
 }
         `}</style>
       </head>
-      <body className="bg-black text-green-400 scanlines">
-        {children}
+      <body className="bg-black text-green-400 scanlines relative">
+        <AppWrapper>
+          {children}
+        </AppWrapper>
         <ServiceWorkerRegister />
         <InstallApp />
       </body>
