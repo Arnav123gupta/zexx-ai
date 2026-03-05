@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Brain } from "lucide-react"
 import { MessageRenderer } from "@/components/message-renderer"
+import { AdBanner } from "@/components/ad-banner"
 
 // Define interfaces
 interface ChatMessage {
@@ -585,6 +586,11 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Ad Banner - Below Header */}
+      <div className="w-full border-b border-green-500/20 bg-black/40 p-2 overflow-hidden">
+        <AdBanner slot="header-ad-slot" format="auto" className="max-w-full" />
+      </div>
+
       {/* Terminal Header */}
       <div className="relative z-10 w-full px-4 py-4">
         <div className="mb-8 border-b border-green-500/30 pb-4">
@@ -843,6 +849,11 @@ export default function Home() {
               {isSpeaking && <span className="glow-cyan">Voice output active</span>}
             </div>
           </div>
+        </div>
+
+        {/* Ad Banner - Below Chat Window */}
+        <div className="w-full border-t border-green-500/20 bg-black/40 p-2 overflow-hidden">
+          <AdBanner slot="chat-ad-slot" format="auto" className="max-w-full" />
         </div>
 
         {/* Help Menu */}
