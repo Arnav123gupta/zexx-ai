@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
+import Script from "next/script"
 import { JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ServiceWorkerRegister } from "./service-worker-register"
@@ -63,6 +64,18 @@ html {
   --font-mono: ${jetbrainsMono.variable};
 }
         `}</style>
+        {/* Google AdSense */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+            onError={(e) => {
+              console.warn('[v0] Failed to load AdSense script:', e)
+            }}
+          />
+        )}
       </head>
       <body className="bg-black text-green-400 scanlines relative">
         <AppWrapper>
