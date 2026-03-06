@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 const BOOT_LINES = [
-  '> Initializing Heaven Network...',
+  '> Initializing Network AI...',
   '> Connecting to Secure AI Core...',
   '> Loading Neural Matrix...',
   '> Authenticating Neural Pathways...',

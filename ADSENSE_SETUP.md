@@ -16,9 +16,9 @@ This project includes Google AdSense integration with responsive ad banners that
 
 Add the following to your `.env.local` file (or Vercel environment variables):
 
-```env
+\`\`\`env
 NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-xxxxxxxxxxxxxxxxxx
-```
+\`\`\`
 
 **Important:** The `NEXT_PUBLIC_` prefix is required so the AdSense script can access this value in the browser.
 
@@ -36,7 +36,7 @@ For each ad unit, you'll get a slot ID (numeric value).
 
 Update the AdBanner component props in `/app/page.tsx`:
 
-```tsx
+\`\`\`tsx
 // Header ad
 <AdBanner slot="YOUR_HEADER_SLOT_ID" format="auto" />
 
@@ -45,18 +45,18 @@ Update the AdBanner component props in `/app/page.tsx`:
 
 // Sidebar ad (optional)
 <AdBanner slot="YOUR_SIDEBAR_SLOT_ID" format="vertical" />
-```
+\`\`\`
 
 ## AdBanner Component API
 
-```tsx
+\`\`\`tsx
 <AdBanner
   slot="1234567890"              // Required: Your AdSense slot ID
   format="auto"                   // Optional: 'auto', 'horizontal', 'vertical', 'rectangle'
   responsive={true}              // Optional: Enable responsive ads
   className="custom-classes"      // Optional: Additional Tailwind classes
 />
-```
+\`\`\`
 
 ### Supported Formats
 
@@ -135,10 +135,10 @@ To verify AdSense is working:
 
 For development/testing without real ads:
 
-```bash
+\`\`\`bash
 # Use test slot ID for development
 <AdBanner slot="test" format="auto" />
-```
+\`\`\`
 
 Then enable "Test mode" in AdSense settings.
 
