@@ -62,7 +62,7 @@ export function InstallApp() {
       <div className="bg-black border-2 border-[#00ff88] rounded-lg p-4 shadow-2xl shadow-[#00ff88]/20">
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <p className="text-[#00ff88] font-mono text-sm font-bold">Install HN AI</p>
+            <p className="text-[#00ff88] font-mono text-sm font-bold">Install NETWORK AI</p>
             <p className="text-green-300 font-mono text-xs mt-1">Add to your device</p>
           </div>
           <button

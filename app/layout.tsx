@@ -13,14 +13,14 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Heaven Network AI - Advanced AI Terminal",
+  title: "Network AI - Advanced AI Terminal",
   description: "Advanced AI Terminal by Zexx Tech Stack - Professional AI chatbot with real-time responses and intelligent conversation.",
-  generator: "Heaven Network AI",
+  generator: "Network AI",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "HN AI",
+    title: "NETWORK AI",
   },
   formatDetection: {
     telephone: false,
