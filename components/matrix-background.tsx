@@ -13,7 +13,7 @@ interface MatrixColumn {
 
 const MATRIX_CHARS = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン!@#$%^&*()'
 const NEON_GREEN = '#00ff88'
-const CHAR_SIZE = 20
+const CHAR_SIZE = 18 // Slightly smaller for denser coverage
 const LAYER_SPEEDS = [0.5, 1.2, 2.0] // Multi-layer depth effect
 
 export function MatrixBackground({ isAlertMode = false }: { isAlertMode?: boolean }) {
@@ -41,18 +41,18 @@ export function MatrixBackground({ isAlertMode = false }: { isAlertMode?: boolea
       columnsRef.current = []
       const cols = Math.ceil(canvas.width / CHAR_SIZE)
       
-      // Create 3 layers with different speeds for depth
+      // Create 3 layers with different speeds for depth - enhanced density
       for (let layer = 0; layer < 3; layer++) {
         for (let i = 0; i < cols; i++) {
           columnsRef.current.push({
             x: i * CHAR_SIZE,
             y: Math.random() * canvas.height,
-            speed: LAYER_SPEEDS[layer] * (Math.random() * 0.5 + 0.75),
+            speed: LAYER_SPEEDS[layer] * (Math.random() * 0.6 + 0.7),
             chars: Array.from(
-              { length: Math.random() * 20 + 8 },
+              { length: Math.random() * 25 + 12 },
               () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]
             ),
-            opacity: (0.6 - layer * 0.15) * (Math.random() * 0.3 + 0.7),
+            opacity: (0.7 - layer * 0.12) * (Math.random() * 0.4 + 0.6),
             layer,
           })
         }
@@ -62,8 +62,8 @@ export function MatrixBackground({ isAlertMode = false }: { isAlertMode?: boolea
 
     // Animation loop
     const animate = () => {
-      // Create motion blur trail effect
-      ctx.fillStyle = isAlertMode ? 'rgba(40, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)'
+      // Create motion blur trail effect with enhanced visibility
+      ctx.fillStyle = isAlertMode ? 'rgba(40, 0, 0, 0.05)' : 'rgba(0, 0, 0, 0.05)'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       // Apply glitch effect in alert mode
@@ -97,26 +97,26 @@ export function MatrixBackground({ isAlertMode = false }: { isAlertMode?: boolea
           // Skip if character is off-screen
           if (charY < -CHAR_SIZE || charY > canvas.height) return
 
-          // Calculate opacity with fade effect
+          // Calculate opacity with fade effect - enhanced for full visibility
           const distanceFromTop = charY / canvas.height
-          let charOpacity = column.opacity * 0.6
+          let charOpacity = column.opacity * 0.85
 
-          if (distanceFromTop > 0.75) {
-            charOpacity *= (1 - (distanceFromTop - 0.75) / 0.25)
+          if (distanceFromTop > 0.8) {
+            charOpacity *= (1 - (distanceFromTop - 0.8) / 0.2)
           }
 
           // Color based on mode
           const color = isAlertMode ? '255, 0, 0' : '0, 255, 136'
           
-          // Draw character
-          ctx.fillStyle = `rgba(${color}, ${charOpacity})`
+          // Draw character with enhanced brightness
+          ctx.fillStyle = `rgba(${color}, ${Math.min(charOpacity * 1.2, 1)})`
           ctx.fillText(char, column.x + CHAR_SIZE / 2 + glitchOffset, charY)
 
           // Enhanced glow for leading character
           if (index === 0) {
-            ctx.shadowColor = isAlertMode ? 'rgba(255, 0, 0, 0.8)' : 'rgba(0, 255, 136, 0.8)'
-            ctx.shadowBlur = 20
-            ctx.fillStyle = `rgba(${color}, ${Math.min(charOpacity * 2, 1)})`
+            ctx.shadowColor = isAlertMode ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 255, 136, 0.9)'
+            ctx.shadowBlur = 25
+            ctx.fillStyle = `rgba(${color}, ${Math.min(charOpacity * 2.5, 1)})`
             ctx.fillText(char, column.x + CHAR_SIZE / 2 + glitchOffset, charY)
             ctx.shadowBlur = 0
           }
