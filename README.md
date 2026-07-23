@@ -1,4 +1,4 @@
-# NETWORK GPT - Advanced Penetration Testing & Bug Bounty Hunting AI
+#Network AI – AI Assistant for Cybersecurity Education, Security Assessment & Ethical Hacking
 
 Advanced AI assistant specialized in penetration testing, vulnerability assessment, bug bounty hunting, and offensive security research.
 
@@ -6,6 +6,13 @@ Advanced AI assistant specialized in penetration testing, vulnerability assessme
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.8-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
+
+## Problem Statement
+Cybersecurity professionals and students often spend hours searching documentation,
+CVE databases, and best practices.
+
+Network AI provides an intelligent assistant that helps users understand
+security concepts, analyze findings, and support authorized security assessments.
 
 ## Features
 
@@ -17,6 +24,26 @@ Advanced AI assistant specialized in penetration testing, vulnerability assessme
 - **Media Upload**: Screenshot and image analysis for vulnerability assessment
 - **Security Focused**: Built-in ethical guidelines and authorization verification
 - **Extended Context**: 100,000 character limit for complex penetration testing queries
+
+ ## 🚀 Key Features
+
+- 🤖 AI Security Assistant
+- 🔍 Vulnerability Guidance
+- 🛡️ Secure Coding Support
+- 🌍 Hinglish Language Support
+- 🎙️ Voice Interaction
+- 📷 Image Analysis
+- ⚡ Multi-AI Engine (Groq, Grok, OpenAI)
+- 📱 Responsive Design
+
+  ## 🚀 Future Roadmap
+
+- ✅ CVE Live Search
+- ✅ OWASP Top 10 Assistant
+- ✅ MITRE ATT&CK Integration
+- ✅ Threat Intelligence Feed
+- ✅ Browser Extension
+- ✅ Android & iOS Mobile App
 
 ## Technology Stack
 
@@ -181,7 +208,7 @@ This project is provided for educational and authorized security testing purpose
 
 ## Creator
 
-**ARNAV** - Security Researcher & AI Developer
+**ARNAV** - Security Researcher & AI Developer ethical hacker 
 
 ## Disclaimer
 
