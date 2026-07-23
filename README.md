@@ -1,5 +1,4 @@
-## Network AI – AI Assistant for Cybersecurity Education, Security Assessment & Ethical Hacking
-
+## Network AI v2.0 AI-Powered Cybersecurity Assistant
 Advanced AI assistant specialized in penetration testing, vulnerability assessment, bug bounty hunting, and offensive security research.
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
