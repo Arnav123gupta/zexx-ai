@@ -1,4 +1,4 @@
-#Network AI – AI Assistant for Cybersecurity Education, Security Assessment & Ethical Hacking
+## Network AI – AI Assistant for Cybersecurity Education, Security Assessment & Ethical Hacking
 
 Advanced AI assistant specialized in penetration testing, vulnerability assessment, bug bounty hunting, and offensive security research.
 
